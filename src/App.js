@@ -11,6 +11,8 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      results: [],
+      search: ''
     };
   }
 
@@ -37,13 +39,25 @@ class App extends Component {
       });
   }
   
+  handleSubmit(e) {
+    e.preventDefault();
+    console.log(e.target.value)
+  }
+
+  handleChange(e) {
+    this.setState({
+      query: e.target.value
+    })
+  }
+
+
 
   render() {
   
     return (
       <div className="App">
       <h1>Bookmark Search</h1>
-        <SearchBar />
+        <SearchBar search={this.state.search} handleSubmit={(e) => this.handleSubmit(e)}   />
         <PrintType />
         <BookType />
         <BooksearchList />
