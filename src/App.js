@@ -12,55 +12,73 @@ class App extends Component {
     super(props);
     this.state = {
       results: [],
-      search: ''
+      search: '',
+      filter: '',
+      type: null,
+      error: null 
     };
   }
 
-  componentDidMount() {
-    const url = 'https://www.googleapis.com/books/v1/volumes?q=tacos';
-    fetch(url) 
-      .then(res => { 
-        if(!res.ok) { 
-          throw new Error('Something went wrong, please try again later.');
-        }
-        return res; 
-      })
-      .then(res => res.json()) 
-      .then(data => {
-        console.log(data);
-        // this.setState({
-        //   error: null 
-        // });
-      })
-      .catch(err => { 
-        this.setState({
-          error: err.message 
-        });
-      });
-  }
-  
-  handleSubmit(e) {
-    e.preventDefault();
-    console.log(e.target.value)
-  }
-
-  handleChange(e) {
+  getSearch(term){
     this.setState({
-      query: e.target.value
-    })
+      search : term
+    });
   }
 
+  getFilter(filter){
+    this.setState({
+      filter: filter
+    });
+  }
+
+  
+  getType(type){
+    this.setState({
+      type: type
+    });
+  }
+
+  getData(data){
+    this.setState({
+      results: data.items
+    });
+  }
+
+ getError(err){
+   this.setState({
+     error: err
+   })
+ }
 
 
+ 
   render() {
   
     return (
       <div className="App">
       <h1>Bookmark Search</h1>
-        <SearchBar search={this.state.search} handleSubmit={(e) => this.handleSubmit(e)}   />
-        <PrintType />
-        <BookType />
-        <BooksearchList />
+        <SearchBar  
+        getSearch={(term)=>this.getSearch(term)}
+        getData={(data) => this.getData(data)}
+        />
+        
+        <PrintType 
+        getFilter = {filter => this.getFilter(filter)}
+        search = {this.state.search}
+        getType = {type => this.getType(type)}
+        getData={(data) => this.getData(data)}
+        />
+
+        <BookType  
+        getType = {filter => this.getType(filter)} 
+        getFilter = {(filter) => this.getFilter(filter)}
+        search = {this.state.search}
+        getData={(data) => this.getData(data)}
+        getError = {(err)=>this.getError(err)}
+        />
+        <BooksearchList 
+          results={this.state.results}
+        />
       </div>
     );
   }
